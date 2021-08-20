@@ -9,7 +9,7 @@ type Contact struct {
 	firstName, lastName, phone, email, position string
 }
 
-func contactInput(contact Contact) Contact {
+func (contact *Contact) contactInput() {
 	var str string
 	fmt.Print("Enter first name: ")
 	fmt.Scanln(&str)
@@ -26,10 +26,9 @@ func contactInput(contact Contact) Contact {
 	fmt.Print("Enter position: ")
 	fmt.Scanln(&str)
 	contact.position = str
-	return contact
 }
 
-func contactOutput(contact Contact) {
+func (contact *Contact) contactOutput() {
 	fmt.Printf("ID: %d\n" +
 		"First name: %s\n" +
 		"Last name: %s\n" +
@@ -46,7 +45,8 @@ func create() {
 	} else {
 		l = db[len(db) - 1].id + 1
 	}
-	contact := contactInput(Contact{id: l})
+	contact := Contact{id: l}
+	contact.contactInput()
 	db = append(db, contact)
 	fmt.Printf("\nContact %s %s was successfully created!\n\n", contact.firstName, contact.lastName)
 }
@@ -64,7 +64,8 @@ func exists(id int) int {
 func update(id int) {
 	ex := exists(id)
 	if ex != -1 {
-		contact := contactInput(db[ex])
+		contact := db[ex]
+		contact.contactInput()
 		db[ex] = contact
 		fmt.Printf("\nContact %s %s was successfully updated!\n\n", contact.firstName, contact.lastName)
 	}
@@ -81,7 +82,7 @@ func delete(id int) {
 func getOne(id int) {
 	ex := exists(id)
 	if ex != -1 {
-		contactOutput(db[ex])
+		db[ex].contactOutput()
 	}
 }
 
@@ -90,7 +91,7 @@ func getAll() {
 		fmt.Print("\nNo contacts yet\n\n")
 	} else {
 		for i := range db {
-			contactOutput(db[i])
+			db[i].contactOutput()
 		}
 	}
 }
